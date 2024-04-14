@@ -1,27 +1,28 @@
 import React, { useState, useRef } from "react";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 import axios from "axios";
-import {v4 as uuidv4} from 'uuid'
 
-import People from "./assets/people.svg";
-import Arrow from "./assets/arrow.svg";
-import Trash from "./assets/trash.svg";
+import People from "../../assets/people.svg";
+import Arrow from "../../assets/arrow.svg";
+
+import H1 from "../../components/Title"
+import ContainerItens from "../../components/ComponentsItens"
+import Button from "../../components/Button"
 
 import {
   Container,
   Image,
-  ContainerItens,
-  H1,
   InputLabel,
   Input,
-  Button,
-  User,
+
 } from "./styles";
 
 const App = () => {
   const [users, setUsers] = useState([]);
   const inputName = useRef();
   const inputAge = useRef();
+  const history = useHistory()
 
   async function addNewUser() {
     const { data: newUser } = await axios.post("http://localhost:3001/users", {
@@ -31,12 +32,11 @@ const App = () => {
 
     console.log(newUser)
     setUsers([...users, newUser]);
+
+    history.push("/usuarios")
   }
 
-  function deleteUser(userId) {
-    const newUsers = users.filter((user) => user.id !== userId);
-    setUsers(newUsers);
-  }
+ 
 
   return (
     <Container>
@@ -51,19 +51,9 @@ const App = () => {
         <Input ref={inputAge} type="number" placeholder="Idade" />
 
         <Button onClick={addNewUser}>
-          Cadastrar <img alt="seta"  src={Arrow} />
+          Cadastrar <img alt="seta" src={Arrow} />
         </Button>
 
-        <ul>
-          {users.map((user) => (
-            <User key={user.id || uuidv4()}>
-              <p>{user.name}</p> <p>{user.age}</p>
-              <button onClick={() => deleteUser(user.id)}>
-                <img src={Trash} alt="lixeira" />
-              </button>
-            </User>
-          ))}
-        </ul>
       </ContainerItens>
     </Container>
   );
